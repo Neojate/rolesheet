@@ -1,0 +1,79 @@
+/*************************************************************************/
+/* MENU ELEMENETOS                                                       */
+/*************************************************************************/
+.elements {
+    border: 1px solid #888;
+    border-radius: 0 15px 15px 0;
+    left: 0;
+    margin-top: 30px;
+    padding: 25px;
+    position: absolute;
+}
+
+.elements .button {
+    display: block;
+    margin: 10px 0;
+}
+
+.elements .button:hover {
+    box-shadow: 5px 5px 5px #888;
+}
+
+.elements .button:hover .tooltip {
+    visibility: visible;
+}
+
+.elements .tooltip {
+    visibility: hidden;
+}
+
+
+
+
+/*************************************************************************/
+/* PANEL DE PROPIEDADES                                                  */
+/*************************************************************************/
+.property-pane {
+    border: 1px solid #888;
+    border-radius: 15px 0 0 15px;
+    bottom: 0px;
+    margin-top: 30px;
+    padding: 15px;
+    position: absolute;
+    font-size: 10px;
+}
+
+.delimitator {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin: 0;
+    padding: 10px 0;
+}
+
+
+#canvas {
+    border: 2px solid black;
+    min-height: 300px;
+}
+
+#canvas div {
+    /*border: 1px solid #444;*/
+    min-height: 50px;
+}
+
+.button {
+    width: 50px;
+    height: 50px;
+}
+
+/*.property-pane {
+    border: 1px solid #888;
+    border-radius: 15px;
+    bottom: 0px;
+    padding: 15px;
+    position: absolute;
+}*/
+
+#canvas div:hover {
+    box-shadow: 5px 5px 5px #888;
+}
