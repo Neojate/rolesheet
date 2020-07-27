@@ -50,7 +50,7 @@ function select(event) {
     //guardado
     let border = selectedElement.style.border.split(' ');
     savedProperties = {
-        'bsize': border[0].split('px')[0],
+        'bsize': border[0],
         'bstyle': border[1],
         'bcolor': border[2],
         'bgcolor': selectedElement.style.backgroundColor !== '' ? selectedElement.style.backgroundColor : 'none',
