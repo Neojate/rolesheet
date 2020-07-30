@@ -18,11 +18,23 @@ function drop(event) : void {
     let core:Core = new Core();
     let bossElement:HTMLElement = null;
 
+    let fatherId:string = event.target.id;
+
     switch(type) {
         case 'cell':
-            bossElement = core.cell(type);
+            bossElement = core.cell(fatherId);
             break;
     }
+    bossElement.addEventListener('click', select);
+}
+
+function select(event) {
+    selectedElement = event.target;
+
+    let border:string[] = selectedElement.style.border.split(' ');
+
+    document.querySelector<HTMLInputElement>('#pp-bordersize').value = border[0];
+
 }
 
 window.onload = () => {

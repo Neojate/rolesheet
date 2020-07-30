@@ -4,6 +4,7 @@ export class Core {
         let divRow:HTMLElement = this.createElement('div', fatherId, 'row', 'diwrow');
         let divCell:HTMLElement = this.createElement('div', fatherId, 'col-sm-12', 'divcell');
         divCell.style.border = '1px solid black';
+        divRow.appendChild(divCell);
         return divRow;
     }
 
