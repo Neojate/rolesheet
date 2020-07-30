@@ -1,5 +1,3 @@
-import { Core } from './core.js';
-
 var undoList:string[] = [];
 var selectedElement:HTMLElement = null;
 
@@ -72,10 +70,19 @@ window.onload = () => {
         selectedElement.style.padding = this.value;
     });
 
+    console.log('compila');
 
 
-};
 
+};*/
+
+function allowDrop(event:any) {
+    event.preventDefault();
+}
+
+function setNumberColumns() {
+    console.log('buenas tardes');
+}
 
 
 
