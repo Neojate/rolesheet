@@ -80,6 +80,6 @@
     position: absolute;
 }*/
 
-#canvas div:hover {
+#canvas div:last-child:hover  {
     box-shadow: 5px 5px 5px #888;
 }

@@ -53,6 +53,36 @@
         </div>
     </div>
     <span>Content</span>
-    <hr />
-
+    <div class="row delimitator">
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="pp-fontsize">Font Size</label>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" id="pp-fontsize">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="pp-fontcolor">Font Color</label>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" id="pp-fontcolor">
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="pp-text">Text:</label>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" id="pp-text">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
