@@ -86,7 +86,6 @@ window.onload = () => {
 
     try {
         document.querySelector<HTMLInputElement>('#pp-text').addEventListener('keydown', function() {
-            console.log('funciona');
             selectedElement.innerText = this.value;
         });
     } catch (e) { }
