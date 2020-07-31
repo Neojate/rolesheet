@@ -79,7 +79,7 @@ window.onload = () => {
         new SelectedInput('pp-margin', 'margin'),
         new SelectedInput('pp-padding', 'padding'),
         new SelectedInput('pp-fontsize', 'fontSize'),
-        new SelectedInput('pp-fontcolor', 'color')
+        new SelectedInput('pp-fontcolor', 'color'),
     ];
 
 
@@ -99,6 +99,9 @@ window.onload = () => {
 
     try {
         document.querySelector<HTMLInputElement>('#pp-text').addEventListener('keydown', function() {
+            selectedElement.innerText = this.value;
+        });
+        document.querySelector<HTMLInputElement>('#pp-text').addEventListener('change', function() {
             selectedElement.innerText = this.value;
         });
     } catch (e) { }

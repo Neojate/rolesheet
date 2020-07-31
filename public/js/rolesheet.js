@@ -67,7 +67,7 @@ window.onload = function () {
         new SelectedInput('pp-margin', 'margin'),
         new SelectedInput('pp-padding', 'padding'),
         new SelectedInput('pp-fontsize', 'fontSize'),
-        new SelectedInput('pp-fontcolor', 'color')
+        new SelectedInput('pp-fontcolor', 'color'),
     ];
     var _loop_1 = function (input) {
         try {
@@ -89,6 +89,9 @@ window.onload = function () {
     catch (e) { }
     try {
         document.querySelector('#pp-text').addEventListener('keydown', function () {
+            selectedElement.innerText = this.value;
+        });
+        document.querySelector('#pp-text').addEventListener('change', function () {
             selectedElement.innerText = this.value;
         });
     }
