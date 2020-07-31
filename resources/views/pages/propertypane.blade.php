@@ -51,6 +51,20 @@
                 </div>
             </div>
         </div>
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="pp-textalign">Align:</label>
+                </div>
+                <div class="col-sm-6">
+                    <select id="pp-textalign">
+                        <option value="left">Left</option>
+                        <option value="center">Center</option>
+                        <option value="right">Right</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
     <span>Content</span>
     <div class="row delimitator">

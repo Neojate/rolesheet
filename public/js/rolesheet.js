@@ -36,7 +36,12 @@ function drop(event) {
     bossElement.addEventListener('click', select);
 }
 function select(event) {
+    //desmarcamos
+    if (selectedElement !== null)
+        selectedElement.style.boxShadow = 'none';
+    //marcamos el nuevo
     selectedElement = event.target;
+    selectedElement.style.boxShadow = '0 0 5px 2px green';
     var border = selectedElement.style.border.split(' ');
     document.querySelector('#pp-bordersize').value = border[0];
     document.querySelector('#pp-bordercolor').value = border[2];
@@ -77,8 +82,13 @@ window.onload = function () {
         _loop_1(input);
     }
     try {
+        document.querySelector('#pp-textalign').addEventListener('change', function () {
+            selectedElement.style.textAlign = this.value;
+        });
+    }
+    catch (e) { }
+    try {
         document.querySelector('#pp-text').addEventListener('keydown', function () {
-            console.log('funciona');
             selectedElement.innerText = this.value;
         });
     }
@@ -111,6 +121,7 @@ var Core = /** @class */ (function () {
     Core.prototype.span = function () {
         var span = this.createElement('span', this.fatherId, null, 'span');
         span.appendChild(document.createTextNode('Default Text'));
+        //this.setStyle(span, 'span');
         return span;
     };
     Core.prototype.input = function () {
@@ -143,6 +154,17 @@ var Core = /** @class */ (function () {
         if (numberColumns == 6)
             return 2;
         return 6;
+    };
+    Core.prototype.setStyle = function (elemenet, type) {
+        switch (type) {
+            case 'span':
+                elemenet.style.borderWidth = '0px';
+                elemenet.style.borderColor = 'transparent';
+                elemenet.style.backgroundColor = 'transparent';
+                break;
+        }
+        elemenet.style.padding = '0px';
+        elemenet.style.margin = '0px';
     };
     return Core;
 }());

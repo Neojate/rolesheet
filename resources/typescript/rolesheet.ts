@@ -43,7 +43,13 @@ function drop(event: any): void {
 }
 
 function select(event: any): void {
+    //desmarcamos
+    if (selectedElement !== null)
+        selectedElement.style.boxShadow = 'none';
+
+    //marcamos el nuevo
     selectedElement = event.target;
+    selectedElement.style.boxShadow = '0 0 5px 2px green';
 
     let border: string[] = selectedElement.style.border.split(' ');
 
@@ -76,6 +82,7 @@ window.onload = () => {
         new SelectedInput('pp-fontcolor', 'color')
     ];
 
+
     for (let input of inputList) {
         try {
             input.element.addEventListener('change', () => {
@@ -83,6 +90,12 @@ window.onload = () => {
             });
         } catch (e) { }
     }
+
+    try {
+        document.querySelector<HTMLSelectElement>('#pp-textalign').addEventListener('change', function() {
+            selectedElement.style.textAlign = this.value;
+        });
+    } catch (e) { }
 
     try {
         document.querySelector<HTMLInputElement>('#pp-text').addEventListener('keydown', function() {
@@ -125,6 +138,7 @@ class Core {
     span(): HTMLElement {
         let span: HTMLElement = this.createElement('span', this.fatherId, null, 'span');
         span.appendChild(document.createTextNode('Default Text'));
+        //this.setStyle(span, 'span');
         return span;
     }
 
@@ -164,6 +178,18 @@ class Core {
         return 6;
     }
 
+    private setStyle(elemenet: HTMLElement, type: string) {
+        switch(type) {
+            case 'span':
+                elemenet.style.borderWidth = '0px';
+                elemenet.style.borderColor = 'transparent';
+                elemenet.style.backgroundColor = 'transparent';
+                break;
+        }
+        elemenet.style.padding = '0px';
+        elemenet.style.margin = '0px';
+
+    }
 }
 
 
@@ -180,7 +206,5 @@ class SelectedInput {
         this.property = property;
     }
 }
-
-
 
 
