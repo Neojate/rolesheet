@@ -18,6 +18,8 @@
                 </div>
             </div>
         </div>
+        <br><br><br><br><br><br><br>
+        @include('pages.modals')
 
 
         {{-- <div>

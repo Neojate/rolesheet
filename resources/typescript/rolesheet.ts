@@ -3,11 +3,22 @@ var selectedElement: HTMLElement = null;
 var numberColumns: number = 2;
 var inputList: SelectedInput[] = [];
 
+var divideObject: DivideObject = null;
+
 /****************************************************************/
 /* HTML EVENTS                                                  */
 /****************************************************************/
-function setNumberColumns(event: any) {
-    numberColumns = parseInt(window.prompt('How many columns do you want?'));
+function setNumberColumns() {
+    document.querySelector<HTMLInputElement>('#btn_modal_col').click();
+}
+
+function setDividePerCent() {
+    document.querySelector<HTMLButtonElement>('#btn_modal_divide').click();
+}
+
+function save() {
+    let code: string = document.querySelector<HTMLElement>('#canvas').outerHTML;
+    window.alert(code);
 }
 
 function allowDrop(event: Event): void {
@@ -28,6 +39,9 @@ function drop(event: any): void {
     switch (type) {
         case 'cell':
             bossElement = core.cell();
+            break;
+        case 'col':
+            bossElement = core.col();
             break;
         case 'divide':
             bossElement = core.divide();
@@ -72,12 +86,18 @@ function select(event: any): void {
 /****************************************************************/
 window.onload = () => {
 
+    document.querySelector<HTMLButtonElement>('#btn_modal_divide').addEventListener('click', function() {
+        divideObject = new DivideObject();
+        divideObject.init();
+    });
+
     inputList = [
         new SelectedInput('pp-bordersize', 'borderWidth'),
         new SelectedInput('pp-bordercolor', 'borderColor'),
         new SelectedInput('pp-bgcolor', 'backgroundColor'),
         new SelectedInput('pp-margin', 'margin'),
         new SelectedInput('pp-padding', 'padding'),
+        new SelectedInput('pp-size', 'width'),
         new SelectedInput('pp-fontsize', 'fontSize'),
         new SelectedInput('pp-fontcolor', 'color'),
     ];
@@ -92,16 +112,16 @@ window.onload = () => {
     }
 
     try {
-        document.querySelector<HTMLSelectElement>('#pp-textalign').addEventListener('change', function() {
+        document.querySelector<HTMLSelectElement>('#pp-textalign').addEventListener('change', function () {
             selectedElement.style.textAlign = this.value;
         });
     } catch (e) { }
 
     try {
-        document.querySelector<HTMLInputElement>('#pp-text').addEventListener('keydown', function() {
+        document.querySelector<HTMLInputElement>('#pp-text').addEventListener('keydown', function () {
             selectedElement.innerText = this.value;
         });
-        document.querySelector<HTMLInputElement>('#pp-text').addEventListener('change', function() {
+        document.querySelector<HTMLInputElement>('#pp-text').addEventListener('change', function () {
             selectedElement.innerText = this.value;
         });
     } catch (e) { }
@@ -127,11 +147,22 @@ class Core {
         return divRow;
     }
 
-    divide(): HTMLElement {
+    col(): HTMLElement {
         let divRow: HTMLElement = this.createElement('div', this.fatherId, 'row', 'diwrow');
         let colsm: number = this.chooseColSm(numberColumns);
         for (let i: number = 0; i < numberColumns; i++) {
             let divCol: HTMLElement = this.createElement('div', divRow.id, `col-sm-${colsm}`, 'divcol');
+            divCol.style.border = '1px solid black';
+            divRow.appendChild(divCol);
+        }
+        return divRow;
+    }
+
+    divide(): HTMLElement {
+        let divRow: HTMLElement = this.createElement('div', this.fatherId, 'row', 'divrow');
+        let percernts: number[] = [divideObject.colLeft(), divideObject.colRight()];
+        for (let i: number = 0; i < 2; i++) {
+            let divCol: HTMLElement = this.createElement('div', divRow.id, `col-sm-${percernts[i]}`, 'divcol');
             divCol.style.border = '1px solid black';
             divRow.appendChild(divCol);
         }
@@ -146,7 +177,7 @@ class Core {
     }
 
     input(): HTMLElement {
-        let input:HTMLElement = this.createElement('input', this.fatherId, null, 'input');
+        let input: HTMLElement = this.createElement('input', this.fatherId, null, 'input');
         input.style.width = '100%';
         return input;
     }
@@ -170,7 +201,7 @@ class Core {
         for (let i: number = 0; i < 10; i++)
             result += characters.charAt(Math.floor(Math.random() * characters.length));
 
-        return result;
+        return `${prefix}_${result}`;
     }
 
     private chooseColSm(numberColumns: number): number {
@@ -182,7 +213,7 @@ class Core {
     }
 
     private setStyle(elemenet: HTMLElement, type: string) {
-        switch(type) {
+        switch (type) {
             case 'span':
                 elemenet.style.borderWidth = '0px';
                 elemenet.style.borderColor = 'transparent';
@@ -204,6 +235,7 @@ class SelectedInput {
 
     element: HTMLInputElement;
     property: string;
+
     constructor(inputId: string, property: string) {
         this.element = document.getElementById(inputId) as HTMLInputElement;
         this.property = property;
@@ -211,3 +243,42 @@ class SelectedInput {
 }
 
 
+
+/****************************************************************/
+/* DIVIDEOBJECT                                                 */
+/****************************************************************/
+class DivideObject {
+    percent: number;
+    isLeft: boolean;
+
+    constructor() {
+        this.percent = 6;
+        this.isLeft = true;
+    }
+
+    init() {
+        this.percent = parseInt(document.querySelector<HTMLInputElement>('#modal_divide_percent').value);
+        this.isLeft = document.querySelector<HTMLInputElement>('#modal_divide_left').checked;
+    }
+
+    colLeft(): number {
+        return this.isLeft ? this.percent : 12 - this.percent;
+    }
+
+    colRight(): number {
+        return this.isLeft? 12 - this.percent : this.percent;
+    }
+}
+
+class ColObject {
+    bootstrapCols: number;
+
+    constructor() {
+        this.bootstrapCols = 6;
+    }
+
+    init() {
+        this.bootstrapCols = parseInt(document.querySelector<HTMLInputElement>('#modal_number_columns').value);
+    }
+
+}

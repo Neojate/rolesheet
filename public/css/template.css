@@ -33,6 +33,24 @@
     visibility: hidden;
 }
 
+.elements .div-element {
+    position: relative;
+}
+
+.btn-plus {
+    background-color: green;
+    border: 1px solid black;
+    border-radius: 5px;
+    bottom: 0px;
+    height: 20px;
+    position: absolute;
+    right: 0px;
+    width: 20px;
+}
+
+.btn-plus:hover {
+    box-shadow: 5px 5px 5px #888;
+}
 
 
 
@@ -81,6 +99,18 @@
     position: absolute;
 }*/
 
+
+/*************************************************************************/
+/* CANVAS                                                                */
+/*************************************************************************/
+
 #canvas div:last-child:hover  {
     box-shadow: 5px 5px 5px #888;
 }
+
+.row {
+    border: none;
+}
+
+
+

@@ -1,0 +1,1 @@
+tsc resources/typescript/sheet.ts -outDir public/js -w

@@ -65,6 +65,20 @@
                 </div>
             </div>
         </div>
+        <div class="col-sm-4">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="pp-size">Size:</label>
+                </div>
+                <div class="col-sm-6">
+                    <select id="pp-size">
+                        <option value="auto">Auto</option>
+                        <option value="75px">Number</option>
+                        <option value="100%">All</option>
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
     <span>Content</span>
     <div class="row delimitator">

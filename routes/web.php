@@ -13,8 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-});
+});*/
+
+//COMIENZA EL JUEGO
+Route::view('/', 'layout.layout');
 
 Route::view('/pruebas', 'dd');
+
+Route::view('/sheet', 'pages.rolesheet.index');

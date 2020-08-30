@@ -2,11 +2,19 @@ var undoList = [];
 var selectedElement = null;
 var numberColumns = 2;
 var inputList = [];
+var divideObject = null;
 /****************************************************************/
 /* HTML EVENTS                                                  */
 /****************************************************************/
-function setNumberColumns(event) {
-    numberColumns = parseInt(window.prompt('How many columns do you want?'));
+function setNumberColumns() {
+    document.querySelector('#btn_modal_col').click();
+}
+function setDividePerCent() {
+    document.querySelector('#btn_modal_divide').click();
+}
+function save() {
+    var code = document.querySelector('#canvas').outerHTML;
+    window.alert(code);
 }
 function allowDrop(event) {
     event.preventDefault();
@@ -22,6 +30,9 @@ function drop(event) {
     switch (type) {
         case 'cell':
             bossElement = core.cell();
+            break;
+        case 'col':
+            bossElement = core.col();
             break;
         case 'divide':
             bossElement = core.divide();
@@ -60,12 +71,17 @@ function select(event) {
 /* ONLOAD                                                       */
 /****************************************************************/
 window.onload = function () {
+    document.querySelector('#btn_modal_divide').addEventListener('click', function () {
+        divideObject = new DivideObject();
+        divideObject.init();
+    });
     inputList = [
         new SelectedInput('pp-bordersize', 'borderWidth'),
         new SelectedInput('pp-bordercolor', 'borderColor'),
         new SelectedInput('pp-bgcolor', 'backgroundColor'),
         new SelectedInput('pp-margin', 'margin'),
         new SelectedInput('pp-padding', 'padding'),
+        new SelectedInput('pp-size', 'width'),
         new SelectedInput('pp-fontsize', 'fontSize'),
         new SelectedInput('pp-fontcolor', 'color'),
     ];
@@ -111,11 +127,21 @@ var Core = /** @class */ (function () {
         divRow.appendChild(divCell);
         return divRow;
     };
-    Core.prototype.divide = function () {
+    Core.prototype.col = function () {
         var divRow = this.createElement('div', this.fatherId, 'row', 'diwrow');
         var colsm = this.chooseColSm(numberColumns);
         for (var i = 0; i < numberColumns; i++) {
             var divCol = this.createElement('div', divRow.id, "col-sm-" + colsm, 'divcol');
+            divCol.style.border = '1px solid black';
+            divRow.appendChild(divCol);
+        }
+        return divRow;
+    };
+    Core.prototype.divide = function () {
+        var divRow = this.createElement('div', this.fatherId, 'row', 'divrow');
+        var percernts = [divideObject.colLeft(), divideObject.colRight()];
+        for (var i = 0; i < 2; i++) {
+            var divCol = this.createElement('div', divRow.id, "col-sm-" + percernts[i], 'divcol');
             divCol.style.border = '1px solid black';
             divRow.appendChild(divCol);
         }
@@ -145,7 +171,7 @@ var Core = /** @class */ (function () {
         var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         for (var i = 0; i < 10; i++)
             result += characters.charAt(Math.floor(Math.random() * characters.length));
-        return result;
+        return prefix + "_" + result;
     };
     Core.prototype.chooseColSm = function (numberColumns) {
         if (numberColumns == 2)
@@ -180,4 +206,33 @@ var SelectedInput = /** @class */ (function () {
         this.property = property;
     }
     return SelectedInput;
+}());
+/****************************************************************/
+/* DIVIDEOBJECT                                                 */
+/****************************************************************/
+var DivideObject = /** @class */ (function () {
+    function DivideObject() {
+        this.percent = 6;
+        this.isLeft = true;
+    }
+    DivideObject.prototype.init = function () {
+        this.percent = parseInt(document.querySelector('#modal_divide_percent').value);
+        this.isLeft = document.querySelector('#modal_divide_left').checked;
+    };
+    DivideObject.prototype.colLeft = function () {
+        return this.isLeft ? this.percent : 12 - this.percent;
+    };
+    DivideObject.prototype.colRight = function () {
+        return this.isLeft ? 12 - this.percent : this.percent;
+    };
+    return DivideObject;
+}());
+var ColObject = /** @class */ (function () {
+    function ColObject() {
+        this.bootstrapCols = 6;
+    }
+    ColObject.prototype.init = function () {
+        this.bootstrapCols = parseInt(document.querySelector('#modal_number_columns').value);
+    };
+    return ColObject;
 }());

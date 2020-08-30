@@ -1,0 +1,161 @@
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+.rolesheet {
+    position: relative;
+}
+
+
+
+#canvas_sheet {
+    border: 1px solid black;
+    height: 1123px;
+    margin: 0 auto;
+    position: relative;
+    width: 794px;
+}
+
+#img_sheet {
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+}
+
+#canvas_sheet input {
+    position: absolute;
+    background-color: white;
+    border: 1px solid red;
+}
+
+.valid {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+#in_title {
+    color: #444;
+    font-size: 20px;
+    left: 80px;
+    top: 85px;
+}
+
+#in_class {
+    color: #444;
+    font-size: 12px;
+    left: 350px;
+    top: 70px;
+    width: 200px;
+}
+
+#in_player {
+    color: #444;
+    font-size: 12px;
+    left: 600px;
+    top: 70px;
+    width: 140px;
+}
+
+#in_abandonado01 {
+    top: 78px;
+    left: 205px;
+    transform: scale(1.4);
+}
+
+/********************************************************************************************************/
+/* PANELES                                                                                              */
+/********************************************************************************************************/
+.panels {
+    bottom: 10px;
+    max-width: 300px;
+    position: sticky;
+}
+
+.panel-title {
+    width: 100%;
+    background-color: #444;
+    border-radius: 0 10px 0 0;
+    color: #fff;
+    padding: 5px 15px;
+    z-index: -1;
+}
+
+.panel-body {
+    padding: 15px;
+}
+
+/********************************************************************************************************/
+/* HISTORICAL                                                                                           */
+/********************************************************************************************************/
+#div_historic {
+    border-style: double;
+    border-left: none;
+    border-radius: 0px 15px 15px 0;
+    height: 300px;
+    overflow-y: auto;
+    max-width: 200px;
+}
+
+#div_historic div {
+    border: 1px solid #eee;
+    padding: 10px 0px 10px 10px;
+}
+
+#div_historic div:hover {
+    background-color: #eee;
+}
+
+/********************************************************************************************************/
+/* PANEL PROPS                                                                                          */
+/********************************************************************************************************/
+#panelprops {
+    border: double;
+    border-left: none;
+    border-radius: 0px 15px 15px 0;
+    max-width: 300px;
+}
+
+.column {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+
+.double-column {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.panel-input {
+    font-size: 12px;
+    width: 100%;
+}
+
+.number {
+    max-width: 50px;
+}
+
+.in_num_panelcard {
+    max-width: 100px;
+}
+
+/********************************************************************************************************/
+/* ITEM PANEL                                                                                           */
+/********************************************************************************************************/
+#item_pane {
+    border: double;
+    border-left: none;
+    border-radius: 0px 15px 15px 0;
+    padding: 30px;
+    margin-bottom: 30px;
+    max-width: 200px;
+}
+
+.img_item {
+    width: 50px;
+    height: 50px;
+}
