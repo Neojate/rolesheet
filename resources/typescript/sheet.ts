@@ -69,6 +69,37 @@ function historicalClick(event: any) {
     panelProps.handleValue(Property.input, target);
 }
 
+function saveClick(event: any) {
+    let canvas: HTMLElement = document.getElementById('canvas_sheet') as HTMLElement;
+    let img: HTMLImageElement = document.getElementById('img_sheet') as HTMLImageElement;
+
+    let data: any = {
+        name: 'name',
+        image: img.src,
+    };
+
+    let body: Array<JSON> = new Array<JSON>();
+    for (let i = 0; i < canvas.getElementsByTagName('input').length; i++) {
+        let element: HTMLElement = canvas.getElementsByTagName('input')[i];
+        let json: any = {
+            id: element.id,
+            x: element.style.left,
+            y: element.style.top,
+            w: element.style.width,
+            h: element.style.height,
+            fontSize: element.style.fontSize
+        }
+        //data.push(json);
+        body.push(json);
+    }
+    data['body'] = body;
+
+    fetch('/savesheet', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+    });
+}
 
 
 
@@ -108,7 +139,7 @@ function addInput(type: InputType, canvas: HTMLElement, mousePos: Point) {
 
     switch (type) {
         case InputType.text:
-            let input: HTMLInputElement = inputClass.createInputText(mousePos);
+            let input: HTMLInputElement = inputClass.createDefaultInputText(mousePos);
 
             if (grid.isActive) {
                 getNearXGrid(input, mousePos, canvas);
@@ -202,6 +233,8 @@ class PanelProps implements IHtmlEvent {
     canvasProps: HTMLElement;
     inputProps: HTMLElement;
 
+    in_img: HTMLInputElement;
+
     in_id: HTMLInputElement;
     in_x: HTMLInputElement;
     in_y: HTMLInputElement;
@@ -219,6 +252,8 @@ class PanelProps implements IHtmlEvent {
     constructor() {
         this.canvasProps = document.getElementById('properties-canvas') as HTMLElement;
         this.inputProps = document.getElementById('properties-input') as HTMLElement;
+
+        this.in_img = document.getElementById('props_img') as HTMLInputElement;
 
         this.in_id = document.getElementById('props_id') as HTMLInputElement;
         this.in_x = document.getElementById('props_x') as HTMLInputElement;
@@ -252,6 +287,8 @@ class PanelProps implements IHtmlEvent {
             case Property.canvas:
                 break;
             case Property.input:
+                this.in_img.value = document.querySelector<HTMLImageElement>('#props_img').src;
+
                 this.in_id.value = element.id;
                 this.in_x.value = element.style.left.split('px')[0];
                 this.in_y.value = element.style.top.split('px')[0];
@@ -266,6 +303,17 @@ class PanelProps implements IHtmlEvent {
     }
 
     events(): void {
+        this.in_img.addEventListener('change', () => {
+            let img: HTMLImageElement = document.getElementById('img_sheet') as HTMLImageElement;
+            img.src = this.in_img.value;
+        });
+
+
+        this.in_id.addEventListener('change', () => {
+            panelHistorical.updateHistoric(this.selectedElement.id, this.in_id.value);
+            this.selectedElement.id = this.in_id.value;
+        });
+
         this.in_x.addEventListener('change', () => {
             this.selectedElement.style.left = `${this.in_x.value}px`;
         });
@@ -319,11 +367,21 @@ class PanelHistorical {
         this.historicalDiv.appendChild(div);
     }
 
+    updateHistoric(lastId: string, newId: string): void {
+        for (let i = 0; i < this.historicalDiv.getElementsByTagName('div').length; i++) {
+            let div: HTMLElement = this.historicalDiv.getElementsByTagName('div')[i] as HTMLElement;
+            if (div.innerHTML == lastId) {
+                div.innerHTML = newId;
+                return;
+            }
+        }
+    }
+
 }
 
 class CanvasInput {
 
-    createInputText(mousePos: Point): HTMLInputElement {
+    createDefaultInputText(mousePos: Point): HTMLInputElement {
         let input: HTMLInputElement = document.createElement('input');
         input.type = 'text';
         input.id = `${Math.random()}`;

@@ -19,6 +19,7 @@
 </head>
 
 <body>
+    @include('pages.rolesheet.components.menu')
     <div class="rolesheet">
         <div id="canvas_sheet" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="canvasClick()">
             <img src="{{ asset('img/taintedgrail02.png') }}" id="img_sheet">

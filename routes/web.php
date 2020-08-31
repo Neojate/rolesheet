@@ -23,3 +23,4 @@ Route::view('/', 'layout.layout');
 Route::view('/pruebas', 'dd');
 
 Route::view('/sheet', 'pages.rolesheet.index');
+Route::post('/savesheet', 'SheetController@saveSheet');

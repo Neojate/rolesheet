@@ -48,6 +48,34 @@ function historicalClick(event) {
     panelProps.handleVisibility(Property.input);
     panelProps.handleValue(Property.input, target);
 }
+function saveClick(event) {
+    var canvas = document.getElementById('canvas_sheet');
+    var img = document.getElementById('img_sheet');
+    var data = {
+        name: 'name',
+        image: img.src
+    };
+    var body = new Array();
+    for (var i = 0; i < canvas.getElementsByTagName('input').length; i++) {
+        var element = canvas.getElementsByTagName('input')[i];
+        var json = {
+            id: element.id,
+            x: element.style.left,
+            y: element.style.top,
+            w: element.style.width,
+            h: element.style.height,
+            fontSize: element.style.fontSize
+        };
+        //data.push(json);
+        body.push(json);
+    }
+    data['body'] = body;
+    fetch('/savesheet', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: { 'Content-Type': 'application/json' }
+    });
+}
 /****************************************************************/
 /* FUNCIONES PRIVADAS                                           */
 /****************************************************************/
@@ -73,7 +101,7 @@ function addInput(type, canvas, mousePos) {
     var inputClass = new CanvasInput();
     switch (type) {
         case InputType.text:
-            var input = inputClass.createInputText(mousePos);
+            var input = inputClass.createDefaultInputText(mousePos);
             if (grid.isActive) {
                 getNearXGrid(input, mousePos, canvas);
             }
@@ -137,6 +165,7 @@ var PanelProps = /** @class */ (function () {
     function PanelProps() {
         this.canvasProps = document.getElementById('properties-canvas');
         this.inputProps = document.getElementById('properties-input');
+        this.in_img = document.getElementById('props_img');
         this.in_id = document.getElementById('props_id');
         this.in_x = document.getElementById('props_x');
         this.in_y = document.getElementById('props_y');
@@ -164,6 +193,7 @@ var PanelProps = /** @class */ (function () {
             case Property.canvas:
                 break;
             case Property.input:
+                this.in_img.value = document.querySelector('#props_img').src;
                 this.in_id.value = element.id;
                 this.in_x.value = element.style.left.split('px')[0];
                 this.in_y.value = element.style.top.split('px')[0];
@@ -176,6 +206,14 @@ var PanelProps = /** @class */ (function () {
     };
     PanelProps.prototype.events = function () {
         var _this = this;
+        this.in_img.addEventListener('change', function () {
+            var img = document.getElementById('img_sheet');
+            img.src = _this.in_img.value;
+        });
+        this.in_id.addEventListener('change', function () {
+            panelHistorical.updateHistoric(_this.selectedElement.id, _this.in_id.value);
+            _this.selectedElement.id = _this.in_id.value;
+        });
         this.in_x.addEventListener('change', function () {
             _this.selectedElement.style.left = _this.in_x.value + "px";
         });
@@ -217,12 +255,21 @@ var PanelHistorical = /** @class */ (function () {
         div.appendChild(text);
         this.historicalDiv.appendChild(div);
     };
+    PanelHistorical.prototype.updateHistoric = function (lastId, newId) {
+        for (var i = 0; i < this.historicalDiv.getElementsByTagName('div').length; i++) {
+            var div = this.historicalDiv.getElementsByTagName('div')[i];
+            if (div.innerHTML == lastId) {
+                div.innerHTML = newId;
+                return;
+            }
+        }
+    };
     return PanelHistorical;
 }());
 var CanvasInput = /** @class */ (function () {
     function CanvasInput() {
     }
-    CanvasInput.prototype.createInputText = function (mousePos) {
+    CanvasInput.prototype.createDefaultInputText = function (mousePos) {
         var input = document.createElement('input');
         input.type = 'text';
         input.id = "" + Math.random();

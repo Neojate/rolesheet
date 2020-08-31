@@ -4,11 +4,11 @@
         <div id="properties-canvas">
             <div class="column mb-2">
                 <div>Name</div>
-                <div><input type="text" class="panel-input"></div>
+                <div><input type="text" id="props_name" class="panel-input"></div>
             </div>
             <div class="column">
                 <div>Image</div>
-                <div><input type="text" class="panel-input"></div>
+                <div><input type="text" id="props_img" class="panel-input"></div>
             </div>
         </div>
         <div id="properties-input">
