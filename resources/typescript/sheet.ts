@@ -201,6 +201,11 @@ enum Property {
     input
 }
 
+enum DirHist {
+    up = -1,
+    down = 1
+}
+
 /****************************************************************/
 /* TIPOS DE DEFINICION                                          */
 /****************************************************************/
@@ -343,10 +348,12 @@ class PanelProps implements IHtmlEvent {
 
 class PanelHistorical {
     historicalDiv: HTMLElement;
+    historicalList: HTMLElement;
+    idPrefix: string = 'hist_';
 
     constructor() {
         this.historicalDiv = document.getElementById('div_historical') as HTMLElement;
-
+        this.historicalList = document.getElementById('list_historical') as HTMLElement;
         this.init();
     }
 
@@ -360,21 +367,73 @@ class PanelHistorical {
     }
 
     fillHistorical(element: HTMLElement): void {
-        let div: HTMLElement = document.createElement('div');
-        div.addEventListener('click', historicalClick);
-        let text: Text = document.createTextNode(element.id);
-        div.appendChild(text);
-        this.historicalDiv.appendChild(div);
+        let divFather: HTMLElement = document.createElement('div');
+        divFather.id = `${this.idPrefix}${element.id}`;
+
+        let divText: HTMLElement = document.createElement('div');
+        divText.addEventListener('click', () => this.selectInput(event));
+        divText.innerText = element.id;
+
+        let divUp: HTMLElement = document.createElement('div');
+        let iUp: HTMLElement = document.createElement('i');
+        iUp.classList.add('fas');
+        iUp.classList.add('fa-long-arrow-alt-up');
+        divUp.addEventListener('click', () => this.moveHistoric(DirHist.up, event) );
+        divUp.appendChild(iUp);
+
+        let divDown: HTMLElement = document.createElement('div');
+        let iDown: HTMLElement = document.createElement('i');
+        iDown.classList.add('fas');
+        iDown.classList.add('fa-long-arrow-alt-down');
+        divDown.addEventListener('click', () => this.moveHistoric(DirHist.down, event));
+        divDown.appendChild(iDown);
+
+        divFather.appendChild(divText);
+        divFather.appendChild(divDown);
+        divFather.appendChild(divUp);
+        this.historicalList.appendChild(divFather);
     }
 
-    updateHistoric(lastId: string, newId: string): void {
-        for (let i = 0; i < this.historicalDiv.getElementsByTagName('div').length; i++) {
-            let div: HTMLElement = this.historicalDiv.getElementsByTagName('div')[i] as HTMLElement;
-            if (div.innerHTML == lastId) {
-                div.innerHTML = newId;
+    selectInput(event: any): void {
+        let element: HTMLElement = event.target as HTMLElement;
+        let id: string = element.textContent;
+
+        let input: HTMLInputElement = document.getElementById(id) as HTMLInputElement;
+        panelProps.handleValue(Property.input, input);
+    }
+
+    moveHistoric(dir: DirHist, event: any): void {
+        let element: HTMLElement = event.target as HTMLElement;
+        let id: string = element.parentElement.parentElement.id.split(this.idPrefix)[1];
+
+        let input: HTMLInputElement = document.getElementById(id) as HTMLInputElement;
+
+        let listElements: NodeListOf<HTMLElement> = this.historicalDiv.querySelectorAll<HTMLElement>('#list_historical > div');
+        let canvas: HTMLElement = document.getElementById('canvas_sheet') as HTMLElement;
+        let listInputs: NodeListOf<HTMLInputElement> = document.querySelectorAll<HTMLInputElement>('#canvas_sheet > input');
+        for (let i = 0; i < listElements.length; i++) {
+            let currentElement: HTMLElement = listElements[i];
+
+            if (currentElement.id.split(this.idPrefix)[1] == id) {
+                let affectedElement: HTMLElement = listElements[i + dir] as HTMLElement;
+                let affectedInput: HTMLElement = listInputs[i + dir] as HTMLInputElement;
+                if (dir == DirHist.up && i > 0) {
+                    this.historicalList.insertBefore(currentElement, affectedElement);
+                    canvas.insertBefore(listInputs[i], affectedInput);
+                } else if (dir == DirHist.down && i < listElements.length - 1) {
+                    this.historicalList.insertBefore(affectedElement, currentElement);
+                    canvas.insertBefore(affectedInput, listInputs[i]);
+                }
                 return;
             }
         }
+    }
+
+    updateHistoric(lastId: string, newId: string): void {
+        let div: HTMLElement = document.getElementById(`${this.idPrefix}${lastId}`) as HTMLElement;
+        div.id = `${this.idPrefix}${newId}`;
+        let divChild: HTMLElement = div.firstElementChild as HTMLElement;
+        divChild.innerHTML = newId;
     }
 
 }

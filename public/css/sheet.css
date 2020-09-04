@@ -92,22 +92,31 @@ html, body {
 /********************************************************************************************************/
 /* HISTORICAL                                                                                           */
 /********************************************************************************************************/
-#div_historic {
+#div_historical {
     border-style: double;
     border-left: none;
     border-radius: 0px 15px 15px 0;
     height: 300px;
     overflow-y: auto;
-    max-width: 200px;
+    max-width: 300px;
 }
 
-#div_historic div {
+#list_historical > div {
     border: 1px solid #eee;
+    display: grid;
+    grid-template-columns: auto 30px 30px;
     padding: 10px 0px 10px 10px;
+
 }
 
-#div_historic div:hover {
+#list_historical > div:hover {
     background-color: #eee;
+}
+
+#list_historical * .fas:hover {
+    color: #0596b6;
+    cursor: pointer;
+    font-weight: bold;
 }
 
 /********************************************************************************************************/

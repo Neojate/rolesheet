@@ -14,6 +14,8 @@
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous">
     </script>
 
+    <script src="https://kit.fontawesome.com/8791fd82a1.js" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="{{ asset('css/sheet.css') }}">
     <script src="{{ asset('js/sheet.js') }}"></script>
 </head>

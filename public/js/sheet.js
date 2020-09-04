@@ -140,6 +140,11 @@ var Property;
     Property[Property["canvas"] = 0] = "canvas";
     Property[Property["input"] = 1] = "input";
 })(Property || (Property = {}));
+var DirHist;
+(function (DirHist) {
+    DirHist[DirHist["up"] = -1] = "up";
+    DirHist[DirHist["down"] = 1] = "down";
+})(DirHist || (DirHist = {}));
 /****************************************************************/
 /* TIPOS DE DEFINICION                                          */
 /****************************************************************/
@@ -237,7 +242,9 @@ var PanelProps = /** @class */ (function () {
 }());
 var PanelHistorical = /** @class */ (function () {
     function PanelHistorical() {
+        this.idPrefix = 'hist_';
         this.historicalDiv = document.getElementById('div_historical');
+        this.historicalList = document.getElementById('list_historical');
         this.init();
     }
     PanelHistorical.prototype.init = function () {
@@ -249,20 +256,64 @@ var PanelHistorical = /** @class */ (function () {
         }
     };
     PanelHistorical.prototype.fillHistorical = function (element) {
-        var div = document.createElement('div');
-        div.addEventListener('click', historicalClick);
-        var text = document.createTextNode(element.id);
-        div.appendChild(text);
-        this.historicalDiv.appendChild(div);
+        var _this = this;
+        var divFather = document.createElement('div');
+        divFather.id = "" + this.idPrefix + element.id;
+        var divText = document.createElement('div');
+        divText.addEventListener('click', function () { return _this.selectInput(event); });
+        divText.innerText = element.id;
+        var divUp = document.createElement('div');
+        var iUp = document.createElement('i');
+        iUp.classList.add('fas');
+        iUp.classList.add('fa-long-arrow-alt-up');
+        divUp.addEventListener('click', function () { return _this.moveHistoric(DirHist.up, event); });
+        divUp.appendChild(iUp);
+        var divDown = document.createElement('div');
+        var iDown = document.createElement('i');
+        iDown.classList.add('fas');
+        iDown.classList.add('fa-long-arrow-alt-down');
+        divDown.addEventListener('click', function () { return _this.moveHistoric(DirHist.down, event); });
+        divDown.appendChild(iDown);
+        divFather.appendChild(divText);
+        divFather.appendChild(divDown);
+        divFather.appendChild(divUp);
+        this.historicalList.appendChild(divFather);
     };
-    PanelHistorical.prototype.updateHistoric = function (lastId, newId) {
-        for (var i = 0; i < this.historicalDiv.getElementsByTagName('div').length; i++) {
-            var div = this.historicalDiv.getElementsByTagName('div')[i];
-            if (div.innerHTML == lastId) {
-                div.innerHTML = newId;
+    PanelHistorical.prototype.selectInput = function (event) {
+        var element = event.target;
+        var id = element.textContent;
+        var input = document.getElementById(id);
+        panelProps.handleValue(Property.input, input);
+    };
+    PanelHistorical.prototype.moveHistoric = function (dir, event) {
+        var element = event.target;
+        var id = element.parentElement.parentElement.id.split(this.idPrefix)[1];
+        var input = document.getElementById(id);
+        var listElements = this.historicalDiv.querySelectorAll('#list_historical > div');
+        var canvas = document.getElementById('canvas_sheet');
+        var listInputs = document.querySelectorAll('#canvas_sheet > input');
+        for (var i = 0; i < listElements.length; i++) {
+            var currentElement = listElements[i];
+            if (currentElement.id.split(this.idPrefix)[1] == id) {
+                var affectedElement = listElements[i + dir];
+                var affectedInput = listInputs[i + dir];
+                if (dir == DirHist.up && i > 0) {
+                    this.historicalList.insertBefore(currentElement, affectedElement);
+                    canvas.insertBefore(listInputs[i], affectedInput);
+                }
+                else if (dir == DirHist.down && i < listElements.length - 1) {
+                    this.historicalList.insertBefore(affectedElement, currentElement);
+                    canvas.insertBefore(affectedInput, listInputs[i]);
+                }
                 return;
             }
         }
+    };
+    PanelHistorical.prototype.updateHistoric = function (lastId, newId) {
+        var div = document.getElementById("" + this.idPrefix + lastId);
+        div.id = "" + this.idPrefix + newId;
+        var divChild = div.firstElementChild;
+        divChild.innerHTML = newId;
     };
     return PanelHistorical;
 }());
