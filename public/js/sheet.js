@@ -8,6 +8,7 @@ var validClass = 'valid';
 var grid;
 var panelProps;
 var panelHistorical;
+var panelCanvas;
 /****************************************************************/
 /* ONLOAD                                                  */
 /****************************************************************/
@@ -15,6 +16,7 @@ window.onload = function () {
     grid = new Grid(true, 10, 10);
     panelProps = new PanelProps();
     panelHistorical = new PanelHistorical();
+    panelCanvas = new PanelCanvas();
 };
 /****************************************************************/
 /* EVENTOS HTML                                                 */
@@ -28,26 +30,36 @@ function allowDrop(event) {
 function drag(event) {
     event.dataTransfer.setData('drag', event.target.dataset.type);
 }
-function drop(event) {
+/*function drop(event: any): void {
     event.preventDefault();
-    var type = event.dataTransfer.getData('drag');
-    var mouseEvent = event;
-    var mousePos = new Point(mouseEvent.pageX, mouseEvent.pageY);
-    var canvas = document.querySelector(idCanvas);
+    let type: InputType = event.dataTransfer.getData('drag');
+
+    let mouseEvent: MouseEvent = event as MouseEvent;
+    let mousePos: Point = new Point(
+        mouseEvent.pageX,
+        mouseEvent.pageY
+    );
+
+    let canvas: HTMLElement = document.querySelector<HTMLElement>(idCanvas);
     mousePos = relativePosFromCanvas(canvas, mousePos);
+
     addInput(type, canvas, mousePos);
 }
-function canvasClick(event) {
+
+/*function canvasClick(event: any) {
     //handleProperties(Property.canvas);
     panelProps.handleVisibility(Property.canvas);
 }
-function historicalClick(event) {
-    var target = document.getElementById(event.target.innerText);
+
+function historicalClick(event: any) {
+    let target: HTMLElement = document.getElementById(event.target.innerText) as HTMLElement;
+
     if (target.classList.contains(validClass))
         target.classList.remove(validClass);
+
     panelProps.handleVisibility(Property.input);
     panelProps.handleValue(Property.input, target);
-}
+}*/
 function saveClick(event) {
     var canvas = document.getElementById('canvas_sheet');
     var img = document.getElementById('img_sheet');
@@ -75,56 +87,6 @@ function saveClick(event) {
         body: JSON.stringify(data),
         headers: { 'Content-Type': 'application/json' }
     });
-}
-/****************************************************************/
-/* FUNCIONES PRIVADAS                                           */
-/****************************************************************/
-function handleProperties(prop) {
-    var canvasProps = document.getElementById('properties-canvas');
-    var inputProps = document.getElementById('properties-input');
-    switch (prop) {
-        case Property.canvas:
-            canvasProps.style.display = 'block';
-            inputProps.style.display = 'none';
-            break;
-        case Property.input:
-            canvasProps.style.display = 'none';
-            inputProps.style.display = 'block';
-            break;
-    }
-}
-function relativePosFromCanvas(canvas, mousePos) {
-    var canvasChoords = canvas.getBoundingClientRect();
-    return new Point(mousePos.x - canvasChoords.x, mousePos.y - canvasChoords.y);
-}
-function addInput(type, canvas, mousePos) {
-    var inputClass = new CanvasInput();
-    switch (type) {
-        case InputType.text:
-            var input = inputClass.createDefaultInputText(mousePos);
-            if (grid.isActive) {
-                getNearXGrid(input, mousePos, canvas);
-            }
-            canvas.appendChild(input);
-            panelHistorical.fillHistorical(input);
-            panelProps.handleVisibility(Property.input);
-            panelProps.handleValue(Property.input, input);
-            break;
-    }
-}
-function getNearXGrid(input, mousePos, canvas) {
-    var nearPoint = new Point(9999, 9999);
-    for (var i = 0; i < canvas.getElementsByTagName('input').length; i++) {
-        var element = canvas.getElementsByTagName('input')[i];
-        var elementPos = new Point(+element.style.left.split('px')[0], +element.style.top.split('px')[0]);
-        //encontrar el punto más cercano
-        var distance = Math.abs(mousePos.x - elementPos.x);
-        if (distance < grid.xHardness && elementPos.x < nearPoint.x)
-            nearPoint = elementPos;
-    }
-    //asignarlo
-    if (nearPoint.x != 9999)
-        input.style.left = nearPoint.x + "px";
 }
 /****************************************************************/
 /* ENUMS                                                        */
@@ -283,6 +245,7 @@ var PanelHistorical = /** @class */ (function () {
         var element = event.target;
         var id = element.textContent;
         var input = document.getElementById(id);
+        panelProps.handleVisibility(Property.input);
         panelProps.handleValue(Property.input, input);
     };
     PanelHistorical.prototype.moveHistoric = function (dir, event) {
@@ -316,6 +279,71 @@ var PanelHistorical = /** @class */ (function () {
         divChild.innerHTML = newId;
     };
     return PanelHistorical;
+}());
+var PanelCanvas = /** @class */ (function () {
+    function PanelCanvas() {
+        this.canvas = document.getElementById('canvas_sheet');
+        this.grid = new Grid(true, 50, 50);
+        this.events();
+    }
+    PanelCanvas.prototype.createDefaultInputText = function (mousePos) {
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.id = "" + Math.random();
+        input.style.left = mousePos.x + "px";
+        input.style.top = mousePos.y + "px";
+        input.style.width = '200px';
+        input.style.height = '30px';
+        input.style.fontSize = '16px';
+        return input;
+    };
+    PanelCanvas.prototype.events = function () {
+        var _this = this;
+        this.canvas.addEventListener('click', function () {
+            panelProps.handleVisibility(Property.canvas);
+        });
+        this.canvas.addEventListener('drop', function (event) {
+            event.preventDefault();
+            var type = event.dataTransfer.getData('drag');
+            var mouseEvent = event;
+            var mousePos = new Point(mouseEvent.pageX, mouseEvent.pageY);
+            mousePos = _this.relativePosFromcanvas(mousePos);
+            _this.addInput(type, mousePos);
+        });
+    };
+    PanelCanvas.prototype.addInput = function (type, mousePos) {
+        switch (type) {
+            case InputType.text:
+                var input = this.createDefaultInputText(mousePos);
+                if (this.grid.isActive)
+                    this.getNearXGrid(input, mousePos);
+                this.canvas.appendChild(input);
+                panelHistorical.fillHistorical(input);
+                panelProps.handleVisibility(Property.input);
+                panelProps.handleValue(Property.input, input);
+                break;
+        }
+    };
+    PanelCanvas.prototype.getNearXGrid = function (input, mousePos) {
+        var nearPoint = new Point(9999, 9999);
+        var list = document.querySelectorAll('#canvas_sheet > input');
+        for (var i = 0; i < list.length; i++) {
+            var element = list[i];
+            var elementPos = new Point(+element.style.left.split('px')[0], +element.style.top.split('px')[0]);
+            //encontrar el punto más cercano
+            var distance = Math.abs(mousePos.x - elementPos.x);
+            if (distance < grid.xHardness && elementPos.x < nearPoint.x)
+                nearPoint = elementPos;
+        }
+        //asignamos
+        if (nearPoint.x != 9999)
+            input.style.left = nearPoint.x + "px";
+    };
+    PanelCanvas.prototype.relativePosFromcanvas = function (mousePos) {
+        var canvasChoords = this.canvas.getBoundingClientRect();
+        return new Point(mousePos.x - canvasChoords.x, mousePos.y - canvasChoords.y);
+    };
+    return PanelCanvas;
 }());
 var CanvasInput = /** @class */ (function () {
     function CanvasInput() {

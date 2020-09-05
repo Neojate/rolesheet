@@ -9,6 +9,7 @@ let grid: Grid;
 
 let panelProps: PanelProps;
 let panelHistorical: PanelHistorical;
+let panelCanvas: PanelCanvas;
 
 /****************************************************************/
 /* ONLOAD                                                  */
@@ -19,6 +20,7 @@ window.onload = () => {
 
     panelProps = new PanelProps();
     panelHistorical = new PanelHistorical();
+    panelCanvas = new PanelCanvas();
 
 }
 
@@ -38,7 +40,7 @@ function drag(event: any): void {
     event.dataTransfer.setData('drag', event.target.dataset.type);
 }
 
-function drop(event: any): void {
+/*function drop(event: any): void {
     event.preventDefault();
     let type: InputType = event.dataTransfer.getData('drag');
 
@@ -54,7 +56,7 @@ function drop(event: any): void {
     addInput(type, canvas, mousePos);
 }
 
-function canvasClick(event: any) {
+/*function canvasClick(event: any) {
     //handleProperties(Property.canvas);
     panelProps.handleVisibility(Property.canvas);
 }
@@ -67,7 +69,7 @@ function historicalClick(event: any) {
 
     panelProps.handleVisibility(Property.input);
     panelProps.handleValue(Property.input, target);
-}
+}*/
 
 function saveClick(event: any) {
     let canvas: HTMLElement = document.getElementById('canvas_sheet') as HTMLElement;
@@ -109,7 +111,7 @@ function saveClick(event: any) {
 /****************************************************************/
 /* FUNCIONES PRIVADAS                                           */
 /****************************************************************/
-function handleProperties(prop: Property) {
+/*function handleProperties(prop: Property) {
     let canvasProps: HTMLElement = document.getElementById('properties-canvas') as HTMLElement;
     let inputProps: HTMLElement = document.getElementById('properties-input') as HTMLElement;
     switch (prop) {
@@ -177,7 +179,7 @@ function getNearXGrid(input: HTMLInputElement, mousePos: Point, canvas: HTMLElem
     if (nearPoint.x != 9999)
         input.style.left = `${nearPoint.x}px`;
 
-}
+}**/
 
 /****************************************************************/
 /* INTERFACES                                                   */
@@ -313,7 +315,6 @@ class PanelProps implements IHtmlEvent {
             img.src = this.in_img.value;
         });
 
-
         this.in_id.addEventListener('change', () => {
             panelHistorical.updateHistoric(this.selectedElement.id, this.in_id.value);
             this.selectedElement.id = this.in_id.value;
@@ -378,7 +379,7 @@ class PanelHistorical {
         let iUp: HTMLElement = document.createElement('i');
         iUp.classList.add('fas');
         iUp.classList.add('fa-long-arrow-alt-up');
-        divUp.addEventListener('click', () => this.moveHistoric(DirHist.up, event) );
+        divUp.addEventListener('click', () => this.moveHistoric(DirHist.up, event));
         divUp.appendChild(iUp);
 
         let divDown: HTMLElement = document.createElement('div');
@@ -399,6 +400,7 @@ class PanelHistorical {
         let id: string = element.textContent;
 
         let input: HTMLInputElement = document.getElementById(id) as HTMLInputElement;
+        panelProps.handleVisibility(Property.input);
         panelProps.handleValue(Property.input, input);
     }
 
@@ -436,6 +438,102 @@ class PanelHistorical {
         divChild.innerHTML = newId;
     }
 
+}
+
+class PanelCanvas implements IHtmlEvent {
+    canvas: HTMLElement;
+    grid: Grid;
+
+    constructor() {
+        this.canvas = document.getElementById('canvas_sheet') as HTMLElement;
+        this.grid = new Grid(true, 50, 50);
+
+        this.events();
+    }
+
+    createDefaultInputText(mousePos: Point): HTMLInputElement {
+        let input: HTMLInputElement = document.createElement('input');
+        input.type = 'text';
+        input.id = `${Math.random()}`;
+        input.style.left = `${mousePos.x}px`;
+        input.style.top = `${mousePos.y}px`;
+        input.style.width = '200px';
+        input.style.height = '30px';
+        input.style.fontSize = '16px';
+        return input;
+    }
+
+    events(): void {
+
+        this.canvas.addEventListener('click', () => {
+            panelProps.handleVisibility(Property.canvas);
+        });
+
+        this.canvas.addEventListener('drop', (event) => {
+            event.preventDefault();
+            let type: InputType = event.dataTransfer.getData('drag') as InputType;
+
+            let mouseEvent: MouseEvent = event as MouseEvent;
+            let mousePos: Point = new Point(
+                mouseEvent.pageX,
+                mouseEvent.pageY
+            );
+
+            mousePos = this.relativePosFromcanvas(mousePos);
+            this.addInput(type, mousePos);
+        });
+
+    }
+
+    private addInput(type: InputType, mousePos: Point): void {
+        switch (type) {
+            case InputType.text:
+                let input: HTMLInputElement = this.createDefaultInputText(mousePos);
+
+                if (this.grid.isActive)
+                    this.getNearXGrid(input, mousePos);
+
+                this.canvas.appendChild(input);
+
+                panelHistorical.fillHistorical(input);
+                panelProps.handleVisibility(Property.input);
+                panelProps.handleValue(Property.input, input);
+
+                break;
+        }
+
+
+    }
+
+    private getNearXGrid(input: HTMLInputElement, mousePos: Point) {
+        let nearPoint: Point = new Point(9999, 9999);
+
+        let list: NodeListOf<HTMLInputElement> = document.querySelectorAll<HTMLInputElement>('#canvas_sheet > input');
+        for (let i = 0; i < list.length; i++) {
+            let element: HTMLElement = list[i];
+            let elementPos: Point = new Point(
+                +element.style.left.split('px')[0],
+                +element.style.top.split('px')[0]
+            );
+
+            //encontrar el punto más cercano
+            let distance: number = Math.abs(mousePos.x - elementPos.x);
+            if (distance < grid.xHardness && elementPos.x < nearPoint.x)
+                nearPoint = elementPos;
+        }
+
+        //asignamos
+        if (nearPoint.x != 9999)
+            input.style.left = `${nearPoint.x}px`;
+    }
+
+    private relativePosFromcanvas(mousePos: Point) {
+        let canvasChoords: DOMRect = this.canvas.getBoundingClientRect();
+        return new Point(
+            mousePos.x - canvasChoords.x,
+            mousePos.y - canvasChoords.y
+        );
+    }
 }
 
 class CanvasInput {

@@ -23,7 +23,7 @@
 <body>
     @include('pages.rolesheet.components.menu')
     <div class="rolesheet">
-        <div id="canvas_sheet" ondrop="drop(event)" ondragover="allowDrop(event)" onclick="canvasClick()">
+        <div id="canvas_sheet" ondragover="allowDrop(event)" onclick="canvasClick()">
             <img src="{{ asset('img/taintedgrail02.png') }}" id="img_sheet">
 
             {{-- <input type="text" id="in_title" class="valid">
