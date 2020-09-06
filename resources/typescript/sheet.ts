@@ -40,37 +40,6 @@ function drag(event: any): void {
     event.dataTransfer.setData('drag', event.target.dataset.type);
 }
 
-/*function drop(event: any): void {
-    event.preventDefault();
-    let type: InputType = event.dataTransfer.getData('drag');
-
-    let mouseEvent: MouseEvent = event as MouseEvent;
-    let mousePos: Point = new Point(
-        mouseEvent.pageX,
-        mouseEvent.pageY
-    );
-
-    let canvas: HTMLElement = document.querySelector<HTMLElement>(idCanvas);
-    mousePos = relativePosFromCanvas(canvas, mousePos);
-
-    addInput(type, canvas, mousePos);
-}
-
-/*function canvasClick(event: any) {
-    //handleProperties(Property.canvas);
-    panelProps.handleVisibility(Property.canvas);
-}
-
-function historicalClick(event: any) {
-    let target: HTMLElement = document.getElementById(event.target.innerText) as HTMLElement;
-
-    if (target.classList.contains(validClass))
-        target.classList.remove(validClass);
-
-    panelProps.handleVisibility(Property.input);
-    panelProps.handleValue(Property.input, target);
-}*/
-
 function saveClick(event: any) {
     let canvas: HTMLElement = document.getElementById('canvas_sheet') as HTMLElement;
     let img: HTMLImageElement = document.getElementById('img_sheet') as HTMLImageElement;
@@ -104,82 +73,6 @@ function saveClick(event: any) {
 }
 
 
-
-
-
-
-/****************************************************************/
-/* FUNCIONES PRIVADAS                                           */
-/****************************************************************/
-/*function handleProperties(prop: Property) {
-    let canvasProps: HTMLElement = document.getElementById('properties-canvas') as HTMLElement;
-    let inputProps: HTMLElement = document.getElementById('properties-input') as HTMLElement;
-    switch (prop) {
-        case Property.canvas:
-            canvasProps.style.display = 'block'
-            inputProps.style.display = 'none';
-            break;
-        case Property.input:
-            canvasProps.style.display = 'none'
-            inputProps.style.display = 'block';
-            break;
-    }
-
-}
-
-function relativePosFromCanvas(canvas: HTMLElement, mousePos: Point): Point {
-    let canvasChoords: DOMRect = canvas.getBoundingClientRect();
-    return new Point(
-        mousePos.x - canvasChoords.x,
-        mousePos.y - canvasChoords.y
-    );
-}
-
-
-function addInput(type: InputType, canvas: HTMLElement, mousePos: Point) {
-    let inputClass: CanvasInput = new CanvasInput();
-
-    switch (type) {
-        case InputType.text:
-            let input: HTMLInputElement = inputClass.createDefaultInputText(mousePos);
-
-            if (grid.isActive) {
-                getNearXGrid(input, mousePos, canvas);
-            }
-
-            canvas.appendChild(input);
-
-            panelHistorical.fillHistorical(input);
-            panelProps.handleVisibility(Property.input);
-            panelProps.handleValue(Property.input, input);
-
-            break;
-
-    }
-}
-
-function getNearXGrid(input: HTMLInputElement, mousePos: Point, canvas: HTMLElement): void {
-
-    let nearPoint: Point = new Point(9999, 9999);
-
-    for (let i = 0; i < canvas.getElementsByTagName('input').length; i++) {
-        let element: HTMLElement = canvas.getElementsByTagName('input')[i];
-        let elementPos: Point = new Point(
-            +element.style.left.split('px')[0],
-            +element.style.top.split('px')[0]
-        );
-
-        //encontrar el punto más cercano
-        let distance: number = Math.abs(mousePos.x - elementPos.x);
-        if (distance < grid.xHardness && elementPos.x < nearPoint.x)
-            nearPoint = elementPos;
-    }
-
-    //asignarlo
-    if (nearPoint.x != 9999)
-        input.style.left = `${nearPoint.x}px`;
-
-}**/
 
 /****************************************************************/
 /* INTERFACES                                                   */

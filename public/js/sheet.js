@@ -30,36 +30,6 @@ function allowDrop(event) {
 function drag(event) {
     event.dataTransfer.setData('drag', event.target.dataset.type);
 }
-/*function drop(event: any): void {
-    event.preventDefault();
-    let type: InputType = event.dataTransfer.getData('drag');
-
-    let mouseEvent: MouseEvent = event as MouseEvent;
-    let mousePos: Point = new Point(
-        mouseEvent.pageX,
-        mouseEvent.pageY
-    );
-
-    let canvas: HTMLElement = document.querySelector<HTMLElement>(idCanvas);
-    mousePos = relativePosFromCanvas(canvas, mousePos);
-
-    addInput(type, canvas, mousePos);
-}
-
-/*function canvasClick(event: any) {
-    //handleProperties(Property.canvas);
-    panelProps.handleVisibility(Property.canvas);
-}
-
-function historicalClick(event: any) {
-    let target: HTMLElement = document.getElementById(event.target.innerText) as HTMLElement;
-
-    if (target.classList.contains(validClass))
-        target.classList.remove(validClass);
-
-    panelProps.handleVisibility(Property.input);
-    panelProps.handleValue(Property.input, target);
-}*/
 function saveClick(event) {
     var canvas = document.getElementById('canvas_sheet');
     var img = document.getElementById('img_sheet');
